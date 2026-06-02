@@ -1,0 +1,8 @@
+{
+  "name": "อ.การช่าง AI",
+  "description": "ระบบวิเคราะห์อาการเสียและประเมินราคางานซ่อมโดยช่างประเมินอัจฉริยะ AI อ.การช่าง",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
