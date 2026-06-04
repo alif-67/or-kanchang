@@ -3,6 +3,7 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import analyzeHandler from "./api/analyze";
+import saveToSheetHandler from "./api/save-to-sheet";
 
 dotenv.config();
 
@@ -18,6 +19,16 @@ app.post("/api/analyze", async (req, res) => {
   } catch (error: any) {
     console.error("Delegated API error:", error);
     res.status(500).json({ error: "Something went wrong in the serverless handler" });
+  }
+});
+
+// API endpoint for Google Sheets saving - Delegated to Vercel Serverless Function handler
+app.post("/api/save-to-sheet", async (req, res) => {
+  try {
+    await saveToSheetHandler(req, res);
+  } catch (error: any) {
+    console.error("Delegated Sheets API error:", error);
+    res.status(500).json({ error: "Something went wrong in the serverless handler for Sheets" });
   }
 });
 
