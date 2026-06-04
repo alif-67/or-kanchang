@@ -450,54 +450,16 @@ function AppContent() {
               )}
             </div>
 
-            {/* Glassmorphic Auth Lock Shield if not logged in */}
+            {/* Interactive Header warning if not logged in */}
             {!user && (
-              <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center text-white">
-                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20 mb-4 animate-pulse">
-                  <Shield className="w-7 h-7 text-blue-400" />
+              <div className="bg-gradient-to-r from-amber-50 to-amber-100/50 border border-amber-200 rounded-2xl p-4 mb-6 text-slate-800 animate-pulse text-xs flex items-start gap-2.5">
+                <Shield className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-extrabold block">ระบบล็อกอัตโนมัติเพื่อความปลอดภัย</span>
+                  <p className="text-slate-600 mt-1 leading-relaxed">
+                    กรุณาเลือกเข้าสู่ระบบด้วย Google หรือบัญชีทดลองด้านล่างของแบบฟอร์ม เพื่อปลดล็อกปุ่มประมวลผลวิเคราะห์อาการเสียและเก็บบันทึกประวัติ
+                  </p>
                 </div>
-                <h3 className="text-lg font-extrabold tracking-tight mb-2">กรุณาเข้าสู่ระบบ "อ.การช่าง AI"ก่อนซ่อม</h3>
-                <p className="text-xs text-slate-300 max-w-xs leading-relaxed mb-6">
-                  จำเป็นต้องระบุชื่อผู้ส่งและเก็บบันทึกประวิติ และจัดเตรียมข้อมูลเชื่อมโยงหน้าแผ่น Google Sheets ได้อย่างโปร่งใส
-                </p>
-
-                {/* React-OAuth-Google Button */}
-                <div id="google-login-holder" className="bg-white rounded-xl p-1 shadow-2xl inline-block max-w-[280px]">
-                  {GOOGLE_CLIENT_ID ? (
-                    <GoogleLogin
-                      onSuccess={handleGoogleSuccess}
-                      onError={() => showToast("การเชื่อมเข้าสู่ระบบผิดพลาด กรุณาลองอีกครั้ง")}
-                      text="signin_with"
-                      shape="pill"
-                      theme="outline"
-                    />
-                  ) : (
-                    <div className="p-3 text-left">
-                      <span className="text-[10px] text-red-600 font-extrabold block mb-1">
-                        ⚠️ ตรวจไม่พบ VITE_GOOGLE_CLIENT_ID
-                      </span>
-                      <span className="text-[9px] text-[#4a5568] block">
-                        กรุณาใส่อีเมล/คีย์ใน .env เพื่อใช้ Google Login จริง
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2 my-4 w-full max-w-xs">
-                  <div className="h-[1px] bg-slate-600 flex-1"></div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">หรือ</span>
-                  <div className="h-[1px] bg-slate-600 flex-1"></div>
-                </div>
-
-                {/* Instant Guest Demo Login option */}
-                <button
-                  type="button"
-                  onClick={handleDemoSignIn}
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 hover:shadow-lg transition-all rounded-xl font-bold text-xs text-white uppercase shadow-md flex items-center gap-2 ring-2 ring-blue-400/20 active:scale-95"
-                >
-                  <User className="w-3.5 h-3.5" />
-                  เข้าใช้ด่วนในฐานะผู้ทดสอบ (Demo)
-                </button>
               </div>
             )}
 
@@ -570,35 +532,75 @@ function AppContent() {
               )}
 
               {/* Submit Buttons */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                {selectedTicketId && (
-                  <button
-                    type="button"
-                    onClick={handleNewAnalysis}
-                    className="flex-1 py-3 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 border border-[#e2e8f0]"
-                  >
-                    เขียนตั๋วใหม่
-                  </button>
+              <div className="pt-2">
+                {!user ? (
+                  <div className="bg-slate-50 border border-slate-200 p-4.5 rounded-2xl text-center space-y-3 shadow-inner">
+                    <p className="text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5">
+                      <Shield className="w-4 h-4 text-amber-500" />
+                      กรุณาเข้าสู่ระบบด้านล่างนี้ เพื่อปลดล็อกปุ่มวิเคราะห์
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                      {/* React Google Sign-in */}
+                      <div className="bg-white rounded-xl p-1 border border-slate-200 shadow-sm inline-flex items-center justify-center min-h-[36px]">
+                        {GOOGLE_CLIENT_ID ? (
+                          <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => showToast("การเชื่อมเข้าสู่ระบบผิดพลาด")}
+                            text="signin_with"
+                            shape="pill"
+                            theme="outline"
+                          />
+                        ) : (
+                          <span className="text-[10px] text-red-500 font-extrabold px-3.5">
+                            ⚠️ ตรวจไม่พบ Client ID ในระบบ
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Demo User button */}
+                      <button
+                        type="button"
+                        onClick={handleDemoSignIn}
+                        className="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-md active:scale-95"
+                      >
+                        <User className="w-3.5 h-3.5" />
+                        เข้าใช้ด้วยบัญชีทดลอง (Demo Login)
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    {selectedTicketId && (
+                      <button
+                        type="button"
+                        onClick={handleNewAnalysis}
+                        className="flex-1 py-3 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 border border-[#e2e8f0]"
+                      >
+                        เขียนตั๋วใหม่
+                      </button>
+                    )}
+                    <button 
+                      type="submit" 
+                      disabled={loading}
+                      className={`flex-[2] py-3 bg-[#2563eb] text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-100 transition-all ${
+                        loading ? "opacity-75 cursor-not-allowed scale-[0.99]" : "hover:bg-[#1d4ed8] hover:shadow-xl hover:shadow-blue-200 active:scale-[0.98]"
+                      }`}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          กำลังประมวลผลอาการเสียด้วยช่าง AI...
+                        </>
+                      ) : (
+                        <>
+                          <Cpu className="w-4 h-4" />
+                          วิเคราะห์อาการเสียด้วย AI
+                        </>
+                      )}
+                    </button>
+                  </div>
                 )}
-                <button 
-                  type="submit" 
-                  disabled={loading}
-                  className={`flex-[2] py-3 bg-[#2563eb] text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-100 transition-all ${
-                    loading ? "opacity-75 cursor-not-allowed scale-[0.99]" : "hover:bg-[#1d4ed8] hover:shadow-xl hover:shadow-blue-200 active:scale-[0.98]"
-                  }`}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      กำลังประมวลผลอาการเสียด้วยช่าง AI...
-                    </>
-                  ) : (
-                    <>
-                      <Cpu className="w-4 h-4" />
-                      วิเคราะห์อาการเสียด้วย AI
-                    </>
-                  )}
-                </button>
               </div>
 
             </form>
